@@ -41,8 +41,9 @@ initAudio();
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(geometry, material);
+cube.position.z = -5; // Move back
 scene.add(cube);
-console.log('Test cube added.');
+console.log('Test cube added at z=-5.');
 
 // Animation loop
 const clock = new THREE.Clock();
