@@ -1,21 +1,4 @@
-import * as THREE from 'https://cdn.skypack.dev/three@0.128.0';
-import { initScene, updateDust } from './scene.js';
-import { initComputer } from './computer.js';
-import { initInteraction } from './interaction.js';
-import { initNarrative, getNarrativeText, inspectComponent, hideNarrative } from './narrative.js';
-import { initAudio } from './audio.js';
-
-// Expose these to the window so interaction.js can call them
-window.THREE = THREE;
-window.getNarrativeText = getNarrativeText;
-window.inspectComponent = inspectComponent;
-window.hideNarrative = hideNarrative;
-window.showNarrativeForComponent = (compName) => {
-    document.getElementById('text-display').textContent = getNarrativeText(compName);
-    document.getElementById('text-display').style.opacity = '1';
-};
-
-// Main initialization
+// Main initialization using global THREE from CDN
 console.log('Initializing Three.js scene...');
 const scene = new THREE.Scene();
 console.log('Scene initialized.');
@@ -30,10 +13,11 @@ console.log('Renderer initialized.');
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
-// Initialize modules
-initScene(scene, camera, THREE);
-const computer = initComputer(scene, THREE);
-initInteraction(scene, camera, computer, THREE, renderer);
+// Initialize modules (these will attach to window if we change them)
+initScene(scene, camera);
+const computer = initComputer(scene);
+console.log('Computer object:', computer);
+initInteraction(scene, camera, computer);
 initNarrative();
 initAudio();
 
@@ -52,7 +36,9 @@ function animate() {
     const delta = clock.getDelta();
 
     // Update dust particles
-    updateDust(scene, delta);
+    if (typeof updateDust === 'function') {
+        updateDust(scene, delta);
+    }
 
     // Update interaction
     if (typeof window.updateInteraction === 'function') {

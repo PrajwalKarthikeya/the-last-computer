@@ -1,23 +1,25 @@
 // Set up the scene, lighting, camera, and atmospheric effects
 export function initScene(scene, camera, THREE) {
-    // Set up a dark, cinematic environment
-    scene.background = new THREE.Color(0x000000);
-    scene.fog = new THREE.FogExp2(0x000000, 0.05); // Very light fog for depth
+    // Set up a bright background for debugging
+    scene.background = new THREE.Color(0xff0000); // Red
+    // We'll keep the fog but with the same color
+    scene.fog = new THREE.FogExp2(0xff0000, 0.02);
 
-    // Lighting: subtle ambient and a dim directional light to simulate distant light
-    const ambientLight = new THREE.AmbientLight(0x111111, 0.5);
+    // Lighting: we'll keep the lights but they might be overridden by the background
+    const ambientLight = new THREE.AmbientLight(0x222222, 0.8); // Brighter ambient
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0x404040, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
     directionalLight.position.set(5, 10, 7);
     scene.add(directionalLight);
 
     // Optional: a hemisphere light for subtle sky/ground color
-    const hemiLight = new THREE.HemisphereLight(0x000000, 0x000000, 0.5);
+    const hemiLight = new THREE.HemisphereLight(0x000020, 0x002000, 0.6);
     scene.add(hemiLight);
 
     // Camera initial position
     camera.position.set(0, 1.6, 3); // Eye level, slightly back from the computer
+    camera.lookAt(0, 0, 0);
 
     // --- Dust Particle System ---
     const dustCount = 15000;
@@ -47,7 +49,7 @@ export function initScene(scene, camera, THREE) {
         color: 0xffffff,
         size: 0.1,
         transparent: true,
-        opacity: 0.2,
+        opacity: 0.3,
         depthTest: true,
         vertexColors: false
     });
@@ -59,6 +61,10 @@ export function initScene(scene, camera, THREE) {
     scene.userData.dustPoints = dustPoints;
     scene.userData.dustVelocities = dustVelocities;
     scene.userData.dustClock = new THREE.Clock();
+
+    // Add axes helper for debugging
+    const axesHelper = new THREE.AxesHelper(5);
+    scene.add(axesHelper);
 }
 
 // Function to update dust particles (call in animation loop)
