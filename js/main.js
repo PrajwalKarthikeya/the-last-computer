@@ -16,9 +16,17 @@ window.showNarrativeForComponent = (compName) => {
 };
 
 // Main initialization
+console.log('Initializing Three.js scene...');
 const scene = new THREE.Scene();
+console.log('Scene initialized.');
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg'), antialias: true });
+console.log('Camera initialized.');
+const canvas = document.getElementById('bg');
+if (!canvas) {
+    console.error('Canvas element #bg not found!');
+}
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+console.log('Renderer initialized.');
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -28,6 +36,13 @@ const computer = initComputer(scene, THREE);
 initInteraction(scene, camera, computer, THREE, renderer);
 initNarrative();
 initAudio();
+
+// TEST CUBE
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+console.log('Test cube added.');
 
 // Animation loop
 const clock = new THREE.Clock();
